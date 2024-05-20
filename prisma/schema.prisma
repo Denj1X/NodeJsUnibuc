@@ -1,0 +1,69 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Hotel {
+  id Int @id @default(autoincrement())
+  name String 
+  latitude Float
+  longitude Float
+  location String
+  description String
+  stars Int
+  rating Float
+  available_rooms Int
+  allowPets Boolean
+  parking Boolean
+  rooms Room[]
+  reservations Reservation[]
+}
+
+model Room {
+  id Int @id @default(autoincrement())
+  number Int
+  floor Int
+  max_capacity Int
+  available Boolean
+  reservedOn DateTime?
+  availableFrom DateTime
+  hotelId Int
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  allowPets Boolean
+  offersParkingSpot Boolean
+  fee Float
+  reservations Reservation[]
+}
+
+model Reservation {
+  id Int @id @default(autoincrement())
+  userId Int
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  hotelId Int
+  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  roomId Int
+  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  number_of_people Int
+  hasPets Boolean
+  needParkingSpot Boolean
+  reservationEndDate DateTime
+  fee Float
+}
+
+model User {
+  id Int @id @default(autoincrement())
+  name String 
+  email String @unique 
+  password String 
+  role Role @default(USER)
+  reservations Reservation[]
+}
+
+enum Role {
+  USER
+  ADMIN
+}
