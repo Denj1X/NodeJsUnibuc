@@ -102,7 +102,7 @@ After I used ```dbml-generator``` in order to receive a ```dbml``` file, the dat
   ```
 - will return all restaurants with 3 stars, sorted by rating in descending order.
 
-### GET: http://localhost:3000/restaurant/:id
+### GET: http://localhost:3000/restaurants/:id
 
   Available for all users, even not authenticated. <br>
   Returns the restaurant with the specified ID
