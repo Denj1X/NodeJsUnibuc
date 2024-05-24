@@ -1,0 +1,69 @@
+//// ------------------------------------------------------
+//// THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+//// ------------------------------------------------------
+
+Table Restaurant {
+  id Int [pk, increment]
+  name String [not null]
+  location String [not null]
+  description String [not null]
+  stars Int [not null]
+  rating Float [not null]
+  available_tables Int [not null]
+  allowPets Boolean [not null]
+  parking Boolean [not null]
+  tables Table [not null]
+  reservations Reservation [not null]
+}
+
+Table Table {
+  id Int [pk, increment]
+  number Int [not null]
+  max_capacity Int [not null]
+  available Boolean [not null]
+  reservedOn DateTime
+  availableFrom DateTime [not null]
+  restaurantId Int [not null]
+  restaurant Restaurant [not null]
+  allowPets Boolean [not null]
+  offersParkingSpot Boolean [not null]
+  fee Float [not null]
+  reservations Reservation [not null]
+}
+
+Table Reservation {
+  id Int [pk, increment]
+  userId Int [not null]
+  user User [not null]
+  restaurantId Int [not null]
+  restaurant Restaurant [not null]
+  tableId Int [not null]
+  table Table [not null]
+  number_of_people Int [not null]
+  hasPets Boolean [not null]
+  needParkingSpot Boolean [not null]
+  reservationEndDate DateTime [not null]
+  fee Float [not null]
+}
+
+Table User {
+  id Int [pk, increment]
+  name String [not null]
+  email String [unique, not null]
+  password String [not null]
+  role Role [not null, default: 'USER']
+  reservations Reservation [not null]
+}
+
+Enum Role {
+  USER
+  ADMIN
+}
+
+Ref: Table.restaurantId > Restaurant.id [delete: Cascade]
+
+Ref: Reservation.userId > User.id [delete: Cascade]
+
+Ref: Reservation.restaurantId > Restaurant.id [delete: Cascade]
+
+Ref: Reservation.tableId > Table.id [delete: Cascade]
