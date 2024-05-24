@@ -6,7 +6,7 @@ const prisma = new PrismaClient();
 
 const validateReservation = async (request, response, next) => {
   try {
-    const { hotelId, roomId } = request.body;
+    const { restaurantId, tableId } = request.body;
     const token = request.headers.authorization.split(" ")[1];
     const decodedToken = jwt.verify(token, process.env.SECRET_KEY);
     const userId = decodedToken.id;
@@ -16,40 +16,40 @@ const validateReservation = async (request, response, next) => {
       where: { id: parseInt(userId) },
     });
 
-    const hotel = await prisma.hotel.findUniqueOrThrow({
-      where: { id: parseInt(hotelId) },
+    const restaurant = await prisma.restaurant.findUniqueOrThrow({
+      where: { id: parseInt(restaurantId) },
     });
-    if (hotel.available_rooms === 0) {
+    if (restaurant.available_tables === 0) {
       throw new Error(
-        `There are no rooms available for the selected hotel: ${hotelId}`
+        `There are no tables available for the selected restaurant: ${restaurantId}`
       );
-    } else if (hotel.allowPets === false && reservation.hasPets === true) {
-      throw new Error(`Pets are no allowed in this hotel! ${hotelId}`);
+    } else if (restaurant.allowPets === false && reservation.hasPets === true) {
+      throw new Error(`Pets are no allowed in this restaurant! ${restaurantId}`);
     } else if (
-      hotel.parking === false &&
+      restaurant.parking === false &&
       reservation.needParkingSpot === true
     ) {
-      throw new Error(`This hotel doesn't offer a parking slot! ${hotelId}`);
+      throw new Error(`This restaurant doesn't offer a parking slot! ${restaurantId}`);
     }
 
-    const room = await prisma.room.findUniqueOrThrow({
-      where: { id: parseInt(roomId) },
+    const table = await prisma.table.findUniqueOrThrow({
+      where: { id: parseInt(tableId) },
     });
-    if (room.available === false) {
+    if (table.available === false) {
       throw new Error(
-        `Room with ID ${roomId} is occupied until ${room.availableFrom}`
+        `Table with ID ${tableId} is occupied until ${table.availableFrom}`
       );
-    } else if (room.allowPets === false && reservation.hasPets === true) {
-      throw new Error(`Pets are not allowed in this room (ID ${roomId}!`);
+    } else if (table.allowPets === false && reservation.hasPets === true) {
+      throw new Error(`Pets are not allowed in this table (ID ${tableId}!`);
     } else if (
-      room.offersParkingSpot === false &&
+      table.offersParkingSpot === false &&
       reservation.needParkingSpot === true
     ) {
       throw new Error(
-        `Reservation for this room (ID ${roomId}) doesn't include a parking spot!`
+        `Reservation for this table (ID ${tableId}) doesn't include a parking spot!`
       );
-    } else if (room.max_capacity < reservation.number_of_people) {
-      throw new Error(`You exceed room (ID ${roomId}) capacity!`);
+    } else if (table.max_capacity < reservation.number_of_people) {
+      throw new Error(`You exceed table (ID ${tableId}) capacity!`);
     }
     next();
   } catch (error) {

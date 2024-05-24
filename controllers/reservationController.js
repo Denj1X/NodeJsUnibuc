@@ -8,8 +8,8 @@ const createReservation = async (request, response) => {
   try {
     const reservation = request.body;
 
-    const room = await prisma.room.findUniqueOrThrow({
-      where: { id: reservation.roomId },
+    const table = await prisma.table.findUniqueOrThrow({
+      where: { id: reservation.tableId },
     });
 
     const reservationDays = Math.floor(
@@ -18,7 +18,7 @@ const createReservation = async (request, response) => {
         (1000 * 3600 * 24)
     );
 
-    const fee = reservationDays * room.fee;
+    const fee = reservationDays * table.fee;
     const userId = parseInt(await getUserIdFromToken(request));
 
     const savedReservation = await prisma.reservation.create({
@@ -26,16 +26,16 @@ const createReservation = async (request, response) => {
     });
 
     await prisma.$transaction([
-      prisma.hotel.update({
-        where: { id: parseInt(reservation.hotelId) },
+      prisma.restaurant.update({
+        where: { id: parseInt(reservation.restaurantId) },
         data: {
-          available_rooms: {
+          available_tables: {
             decrement: 1,
           },
         },
       }),
-      prisma.room.update({
-        where: { id: parseInt(reservation.roomId) },
+      prisma.table.update({
+        where: { id: parseInt(reservation.tableId) },
         data: {
           available: false,
           reservedOn: new Date(),
@@ -107,13 +107,13 @@ const updateReservation = async (request, response) => {
       )
     );
 
-    const room = await prisma.room.findUniqueOrThrow({
-      where: { id: existingReservation.roomId },
+    const table = await prisma.table.findUniqueOrThrow({
+      where: { id: existingReservation.tableId },
     });
 
-    const fee = reservationDays * room.fee;
-    await prisma.room.update({
-      where: { id: parseInt(existingReservation.roomId) },
+    const fee = reservationDays * table.fee;
+    await prisma.table.update({
+      where: { id: parseInt(existingReservation.tableId) },
       data: {
         availableFrom: reservationEndDate,
       },
@@ -152,17 +152,17 @@ const deleteReservation = async (request, response) => {
     }
 
     await prisma.$transaction([
-      prisma.hotel.update({
-        where: { id: parseInt(reservation.hotelId) },
+      prisma.restaurant.update({
+        where: { id: parseInt(reservation.restaurantId) },
         data: {
-          available_rooms: {
+          available_tables: {
             increment: 1,
           },
         },
       }),
 
-      prisma.room.update({
-        where: { id: reservation.roomId },
+      prisma.table.update({
+        where: { id: reservation.tableId },
         data: {
           available: true,
           reservedOn: null,

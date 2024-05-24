@@ -2,15 +2,15 @@ const express = require('express')
 const app = express()
 
 //routes
-const hotelRoute = require("./routes/hotelRoute");
+const restaurantRoute = require("./routes/restaurantRoute");
 const userRoute = require("./routes/userRoute");
-const roomRoute = require("./routes/roomRoute");
+const tableRoute = require("./routes/tableRoute");
 const reservationRoute = require("./routes/reservationRoute");
 
 app.use(express.json());
 
-app.use("/hotels", hotelRoute);
-app.use("/rooms", roomRoute);
+app.use("/restaurants", restaurantRoute);
+app.use("/tables", tableRoute);
 app.use("/reservations", reservationRoute);
 app.use("/auth", userRoute);
 

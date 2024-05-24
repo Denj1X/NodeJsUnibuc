@@ -3,24 +3,24 @@ const { request, response, query } = require("express");
 const { StatusCodes } = require("http-status-codes");
 const prisma = new PrismaClient();
 
-const createRoom = async (request, response) => {
+const createTable = async (request, response) => {
   try {
-    const { hotelId } = request.body;
-    const hotel = await prisma.hotel.findUniqueOrThrow({
-      where: { id: parseInt(hotelId) },
+    const { restaurantId } = request.body;
+    const restaurant = await prisma.restaurant.findUniqueOrThrow({
+      where: { id: parseInt(restaurantId) },
     });
-    const room = await prisma.room.create({
+    const table = await prisma.table.create({
       data: { ...request.body, availableFrom: new Date() },
     });
-    response.status(StatusCodes.CREATED).json(room);
+    response.status(StatusCodes.CREATED).json(table);
   } catch (error) {
     response
       .status(StatusCodes.BAD_REQUEST)
-      .json({ message: `Error creating room: ${error}` });
+      .json({ message: `Error creating table: ${error}` });
   }
 };
 
-const getAllRooms = async (request, response) => {
+const getAllTables = async (request, response) => {
   try {
     const queryKeys = Object.keys(request.query);
     const createdQuery = {};
@@ -28,11 +28,11 @@ const getAllRooms = async (request, response) => {
     let sortingDirection;
 
     if (queryKeys.length === 0) {
-      var rooms = await prisma.room.findMany();
+      var tables = await prisma.table.findMany();
     } else {
       queryKeys.forEach((key) => {
         if (key !== "sort" && key !== "orderBy") {
-          if (key === "hotelId") {
+          if (key === "restaurantId") {
             createdQuery[key] = parseInt(request.query[key]);
           } else if (
             ["available", "allowPets", "offersParkingSpot"].includes(key)
@@ -54,18 +54,18 @@ const getAllRooms = async (request, response) => {
         let orderByBody = sortingDirection
           ? { [sortingCriteria]: sortingDirection }
           : { [sortingCriteria]: "asc" };
-        var rooms = await prisma.room.findMany({
+        var tables = await prisma.table.findMany({
           where: { ...createdQuery },
           orderBy: [orderByBody],
         });
       } else {
-        var rooms = await prisma.room.findMany({
+        var tables = await prisma.table.findMany({
           where: { ...createdQuery },
         });
       }
     }
 
-    response.status(StatusCodes.OK).json(rooms);
+    response.status(StatusCodes.OK).json(tables);
   } catch (error) {
     response
       .status(StatusCodes.BAD_REQUEST)
@@ -73,13 +73,13 @@ const getAllRooms = async (request, response) => {
   }
 };
 
-const getRoomById = async (request, response) => {
+const getTableById = async (request, response) => {
   const { id } = request.params;
   try {
-    const room = await prisma.room.findUniqueOrThrow({
+    const table = await prisma.table.findUniqueOrThrow({
       where: { id: parseInt(id) },
     });
-    response.status(StatusCodes.OK).json(room);
+    response.status(StatusCodes.OK).json(table);
   } catch (error) {
     response
       .status(StatusCodes.BAD_REQUEST)
@@ -87,53 +87,53 @@ const getRoomById = async (request, response) => {
   }
 };
 
-const updateRoom = async (request, response) => {
+const updateTable = async (request, response) => {
   try {
     const { id } = request.params;
-    const room = await prisma.room.findUniqueOrThrow({
+    const table = await prisma.table.findUniqueOrThrow({
       where: { id: parseInt(id) },
     });
-    const hotel = await prisma.hotel.findUniqueOrThrow({
-      where: { id: parseInt(request.body.hotelId) },
+    const restaurant = await prisma.restaurant.findUniqueOrThrow({
+      where: { id: parseInt(request.body.restaurantId) },
     });
-    const updatedRoom = await prisma.room.update({
+    const updatedTable = await prisma.table.update({
       where: { id: parseInt(id) },
       data: request.body,
     });
     response.status(StatusCodes.OK).json({
-      message: `Room with id: ${id} successfully updated!`,
-      updatedRoom,
+      message: `Table with id: ${id} successfully updated!`,
+      updatedTable,
     });
   } catch (error) {
     response
       .status(StatusCodes.BAD_REQUEST)
-      .json({ message: `Error updating room: ${error}` });
+      .json({ message: `Error updating table: ${error}` });
   }
 };
 
-const deleteRoom = async (request, response) => {
+const deleteTable = async (request, response) => {
   try {
     const { id } = request.params;
-    const room = await prisma.room.findUniqueOrThrow({
+    const table = await prisma.table.findUniqueOrThrow({
       where: { id: parseInt(id) },
     });
-    const deletedHotel = await prisma.room.delete({
+    const deletedRestaurant = await prisma.table.delete({
       where: { id: parseInt(id) },
     });
     response
       .status(StatusCodes.OK)
-      .json({ message: "Room successfully deleted!" });
+      .json({ message: "Table successfully deleted!" });
   } catch (error) {
     response
       .status(StatusCodes.BAD_REQUEST)
-      .json({ message: `Error deleting room: ${error}` });
+      .json({ message: `Error deleting table: ${error}` });
   }
 };
 
 module.exports = {
-  createRoom,
-  getAllRooms,
-  getRoomById,
-  updateRoom,
-  deleteRoom,
+  createTable,
+  getAllTables,
+  getTableById,
+  updateTable,
+  deleteTable,
 };

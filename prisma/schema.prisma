@@ -7,32 +7,29 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Hotel {
+model Restaurant {
   id Int @id @default(autoincrement())
   name String 
-  latitude Float
-  longitude Float
   location String
   description String
   stars Int
   rating Float
-  available_rooms Int
+  available_tables Int
   allowPets Boolean
   parking Boolean
-  rooms Room[]
+  tables Table[]
   reservations Reservation[]
 }
 
-model Room {
+model Table {
   id Int @id @default(autoincrement())
   number Int
-  floor Int
   max_capacity Int
   available Boolean
   reservedOn DateTime?
   availableFrom DateTime
-  hotelId Int
-  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
   allowPets Boolean
   offersParkingSpot Boolean
   fee Float
@@ -43,10 +40,10 @@ model Reservation {
   id Int @id @default(autoincrement())
   userId Int
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  hotelId Int
-  hotel Hotel @relation(fields: [hotelId], references: [id], onDelete: Cascade)
-  roomId Int
-  room Room @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  restaurantId Int
+  restaurant Restaurant @relation(fields: [restaurantId], references: [id], onDelete: Cascade)
+  tableId Int
+  table Table @relation(fields: [tableId], references: [id], onDelete: Cascade)
   number_of_people Int
   hasPets Boolean
   needParkingSpot Boolean
