@@ -6,8 +6,8 @@ const {
   updateReservation,
   deleteReservation,
 } = require("../controllers/reservationController");
-const validateReservation = require("../middlewares/validReservation");
-const { verifyAuth, verifyAdmin } = require("../middlewares/authorization");
+const validateReservation = require("../middleware/validReservation");
+const { verifyAuth, verifyAdmin } = require("../middleware/authorization");
 const router = express.Router();
 
 router.post("/add", verifyAuth, validateReservation, createReservation);

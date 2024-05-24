@@ -7,7 +7,7 @@ const {
   deleteTable,
 } = require("../controllers/tableController");
 const router = express.Router();
-const {  verifyAuth, verifyAdmin } = require("../middlewares/authorization");
+const {  verifyAuth, verifyAdmin } = require("../middleware/authorization");
 
 router.post("/add", verifyAuth, verifyAdmin,createTable);
 router.get("/", getAllTables);

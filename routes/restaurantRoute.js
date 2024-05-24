@@ -6,7 +6,7 @@ const {
   updateRestaurant,
   deleteRestaurant,
 } = require("../controllers/restaurantController");
-const { verifyAuth,verifyAdmin } = require("../middlewares/authorization");
+const { verifyAuth,verifyAdmin } = require("../middleware/authorization");
 const router = express.Router();
 
 router.post("/add", verifyAuth, verifyAdmin, createRestaurant);

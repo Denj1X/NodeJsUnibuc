@@ -1,7 +1,7 @@
 const { PrismaClient } = require("@prisma/client");
 const { response, request } = require("express");
 const { StatusCodes } = require("http-status-codes");
-const { getUserIdFromToken, getRoleFromToken } = require("../utils/tokenParser");
+const { getUserIdFromToken, getRoleFromToken } = require("../parser");
 const prisma = new PrismaClient();
 
 const createReservation = async (request, response) => {
