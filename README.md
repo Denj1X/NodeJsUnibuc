@@ -146,7 +146,6 @@ After I used ```dbml-generator``` in order to receive a ```dbml``` file, the dat
  ``` json
  {
    "number": <Number>,
-   "floor": <Number>,
    "max_capacity": <Number>,
    "available": <Boolean>,
    "restaurantId": <Number>,
@@ -195,7 +194,6 @@ After I used ```dbml-generator``` in order to receive a ```dbml``` file, the dat
    ``` json
       {
     "number": <Number>,
-    "floor": <Number>,
     "max_capacity": <Number>,
     "available": <Boolean>,
     "reservedOn": <DateTime>,
